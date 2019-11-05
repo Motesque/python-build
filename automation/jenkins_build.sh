@@ -7,7 +7,7 @@ set -e
 mkdir -p $WORKSPACE/artifacts
 ARCH=$1
 PYTHON_VERSION=$2
-cd ..
+cd $WORKSPACE
 sed -e s/#{platform}/$ARCH/g Dockerfile.in > Dockerfile
 echo "Building Python '$PYTHON_VERSION' for architecture '$ARCH'"
 docker build -t python-build-$ARCH .
