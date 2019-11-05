@@ -3,7 +3,7 @@ if [ $WORKSPACE == "" ]; then
     echo "WARNING: No WORKSPACE set"
     exit 1
 fi
-
+set -e
 mkdir -p $WORKSPACE/artifacts
 ARCH=$1
 PYTHON_VERSION=$2
