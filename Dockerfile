@@ -4,7 +4,7 @@ FROM balenalib/$ARCH-debian:stretch-build-20190215
 ARG ARCH
 ARG PYTHON_VERSION
 
-RUN [ "if [ $ARCH != "amd64" ]; then cross-build-start fi" ]
+RUN [ "if [ $ARCH != "amd64" ]; then cross-build-start; fi" ]
 
 RUN buildDeps=' \
 		curl \
@@ -37,4 +37,4 @@ RUN mkdir -p /usr/tmp && cd /usr/tmp \
 
 RUN cd / && tar -cvzf $TAR_FILE python/*
 
-RUN [ "if [ $ARCH != "amd64" ]; then cross-build-end fi" ]
+RUN [ "if [ $ARCH != "amd64" ]; then cross-build-end; fi" ]
