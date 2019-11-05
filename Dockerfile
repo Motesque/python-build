@@ -1,0 +1,40 @@
+ARG ARCH
+FROM balenalib/$ARCH-debian:stretch-build-20190215
+
+ARG ARCH
+ARG PYTHON_VERSION
+
+RUN [ "if [ $ARCH != "amd64" ]; then cross-build-start fi" ]
+
+RUN buildDeps=' \
+		curl \
+		gcc \
+		libbz2-dev \
+		libc6-dev \
+		libncurses-dev \
+		libreadline-dev \
+		libsqlite3-dev \
+		libssl-dev \
+		liblzma-dev \
+		libffi-dev \
+		make \
+		xz-utils \
+		zlib1g-dev \
+		python python-dev python-pip python-setuptools ca-certificates patch \
+	' \
+	&& install_packages -y $buildDeps
+
+ENV TAR_FILE=Python-$PYTHON_VERSION.linux-$ARCH.tar.gz
+
+RUN mkdir -p /usr/tmp && cd /usr/tmp \
+    && wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz \
+    && tar -zxvf Python-$PYTHON_VERSION.tgz \
+    && cd Python-$PYTHON_VERSION \
+    && ./configure --enable-shared \
+    && make -j4 \
+    && make -j4 DESTDIR="/python" install \
+    && rm -rf /usr/tmp
+
+RUN cd / && tar -cvzf $TAR_FILE python/*
+
+RUN [ "if [ $ARCH != "amd64" ]; then cross-build-end fi" ]
