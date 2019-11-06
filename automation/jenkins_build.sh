@@ -11,6 +11,12 @@ set -e
 mkdir -p $WORKSPACE/artifacts
 cd $WORKSPACE
 echo "Building Python '$PYTHON_VERSION' for architecture '$ARCH'"
+# remove the crossbuild commands if needed
+if [[ $ARCH == "amd64" ]]; then
+    cat Dockerfile.in  | sed -e 's/RUN \[ "cross-build-start" \]//g' -e 's/RUN \[ \"cross-build-end\" \]//g' > Dockerfile
+else
+    cp Dockerfile.in Dockerfile
+fi
 docker build -t python-build-$ARCH-$PYTHON_VERSION --build-arg ARCH=$ARCH --build-arg PYTHON_VERSION=$PYTHON_VERSION .
 
 echo "Copying artifact..."
